@@ -1,0 +1,35 @@
+name: Jaffle Shop dlt Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Jaffle Shop pipeline
+        run: |
+          python jaffle_shop_pipeline.py
+
+      - name: Upload DuckDB database
+        uses: actions/upload-artifact@v4
+        with:
+          name: jaffle-shop-duckdb
+          path: "*.duckdb"
